@@ -3,7 +3,8 @@ const express = require('express');
 const server = express();
 const http = require('http').Server(server);
 const io = require('socket.io')(http);
-var os = require('os');
+const os = require('os');
+const uuid4 = require('uuid/v4');
 
 const app = require('./app');
 
@@ -18,6 +19,8 @@ for (let k in interfaces) {
     }
 }
 
+const connections = [];
+
 // When Electron has finished initializing, start the http server.
 server.use(express.static(path.join(__dirname, '../../build/')));
 
@@ -28,7 +31,23 @@ server.get('/', (req, res) => {
 
 io.on('connection', socket => {
   console.log('a user connected');
-  io.emit('console.log', addresses);
+
+  const { query } = socket.handshake;
+
+  socket.user = {};
+
+  if (query.id) {
+    socket.user.id = query.id;
+  } else {
+    socket.user.id = uuid4();
+    socket.emit('update id', socket.user.id);
+  }
+  socket.user.name = query.name;
+  connections.push(socket);
+
+  if (socket.user.id === 0) {
+    io.emit('console.log', addresses);
+  }
 
   socket.on('chat message', function(msg){
     io.emit('chat message', msg);

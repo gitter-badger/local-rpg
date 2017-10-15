@@ -22,7 +22,12 @@ const app = choo();
 
 // App state and emitters
 app.use((state, emitter) => {
-  state.socket = io('http://localhost:3000');
+  state.socket = io('http://localhost:3000', {
+    query: {
+      id: 0,
+      name: 'DM',
+    },
+  });
   state.currentView = 'main';
   state.viewStates = {};
   state.logs = [];

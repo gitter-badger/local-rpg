@@ -8,14 +8,29 @@ import '../global/style.css';
 // import 'jquery-ui/themes/base/menu.css';
 // import 'jquery-ui/themes/base/autocomplete.css';
 // import 'jquery-ui/themes/base/theme.css';
+// For using jQuery UI: https://stackoverflow.com/a/42465244
 
 import io from 'socket.io-client';
-// For using jQuery UI: https://stackoverflow.com/a/42465244
+import store from 'store';
 
 import { MovablePiece } from '../global/display/MovablePiece';
 
+const storedUser = store.get('localRPG-user');
+const user = {
+  id: storedUser.id || null,
+  name: storedUser || 'Player',
+};
+
 $(function () {
-  const socket = io();
+  const socket = io({
+    query: Object.assign({}, user),
+  });
+
+  socket.on('update id', newId => {
+    user.id = newId;
+    store.set('localRPG-user', user);
+  });
+
   $('form').submit(function(){
     socket.emit('chat message', $('#m').val());
     $('#m').val('');
