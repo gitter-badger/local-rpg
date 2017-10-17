@@ -9,7 +9,6 @@
     "dev:client": "concurrently --kill-others \"npm run watch:client\" \"npm run start:app\"",
     "start": "npm run build && npm run start:app",
     "start:app": "electron ./src/host/server.js",
-    "dist": "npm run build && electron-builder",
     "build": "npm run build:clean && npm run build:host && npm run build:client",
     "build:clean": "rimraf ./build ./dist",
     "build:client": "webpack --config webpack.config.client.js --progress --colors",
@@ -17,6 +16,7 @@
     "watch": "concurrently --kill-others \"npm run watch:host\" \"npm run watch:client\"",
     "watch:client": "webpack --config webpack.config.client.js --watch --progress --colors",
     "watch:host": "webpack --config webpack.config.host.js --watch --progress --colors",
+    "dist": "npm run build && electron-builder",
     "postinstall": "electron-builder install-app-deps"
   },
   "author": "Robbie Antenesse <dev@alamantus.com>",
@@ -31,7 +31,7 @@
     "directories": {
       "buildResources": "_build"
     },
-    "asarUnpack": "./build/client/*"
+    "asarUnpack": "./build/{assets,client}/**/*"
   },
   "license": "MIT",
   "devDependencies": {

@@ -3,6 +3,7 @@ const path = require('path');
 const url = require('url');
 
 // If using npm run dev, electron window will reload when changes are made.
+// Remove this line when you want to run npm run dist.
 require('electron-reload')(path.resolve(__dirname, '../../build'));
 
 class App {
